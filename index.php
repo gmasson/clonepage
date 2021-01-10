@@ -6,39 +6,46 @@
 	Licença MIT
 */
 
-/* Aqui você insere a URL */
+/* Insira a URL */
 $url = "sua_URL_aqui";
 
 /*
-	Não alterar nada a partir daqui!
+	Não alterar nada a partir daqui! (pois exige conhecimento mais avançado)
 */
 
-function clonePage( $site_url ){
-	$ch = curl_init();
-	$timeout = 5;
-	curl_setopt ($ch, CURLOPT_URL, $site_url);
-	curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-	ob_start();
-	curl_exec($ch);
-	curl_close($ch);
-	$file_contents = ob_get_contents();
-	ob_end_clean();
-	return $file_contents;
-}
+// Iniciando a instância do cURL
+$ch = curl_init();
 
-$page = clonePage($url);
+// Definindo Timeout
+$timeout = 5;
+
+curl_setopt($ch, CURLOPT_URL, $url);
+
+// Timeout
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+
+// Conteúdo obtido deve ser retornado em vez de exibido
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+// Seguir redirecionamentos
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+// Executando
+$page = curl_exec($ch);
+
+// Substituindo textos
+/*
+	Caso precise substituir textos dentro da página, apague a marcação de comentários da linha abaixo (#).
+	Após isso, insira os textos que precisam ser alterados, como no exemplo.
+	Você pode copiar e colas a linha do código, para substituir quantas palavras quiser.
+*/
+#$page = strtr($page, "Texto Original", "Texto Editado");
+
+// Visualizando conteúdo (para desenvolvedores)
+#var_dump($page);
+
+// Visualizando conteúdo
 echo $page;
 
-/*
-	Substituindo textos
-	Caso precise substituir textos dentro da página, apague o trecho "echo $page;" acima e as marcações de comentários das linhas abaixo.
-	Após isso, insira nas linhas dentro da array, os textos que precisam ser alterados, como no exemplo.
-*/
-
-/*
-$changedPage = strtr($page, array(
-    "Texto Original 1" => "Texto Editado 1",
-    "Texto Original 2" => "Texto Editado 2",
-));
-echo $changedPage;
-*/
+// Encerrando a instância do cURL
+curl_close($ch);
